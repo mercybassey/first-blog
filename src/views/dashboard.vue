@@ -1,11 +1,14 @@
 <template>
-  <div id="dashboard">
-      <div class="container plan">
+  <div id="dashboard" >
+      <div class="loader" v-if="loading">Loading...
+        
+      </div>
+      <div class="container plan" v-else >
           <h1>Updates</h1><br><br>
                <div>
 
                    <div >
-                        <div >
+                        <div>
                            
                             <ul v-for="(blog, index) in blogs" :key="index">
                                 <div class="">
@@ -84,7 +87,7 @@
                </div>
                 
         </div>
-  </div>
+  
 </template>
 
 <script>
@@ -97,6 +100,7 @@ export default {
                 category:" ",
                 author: " ",
                 date: " ",
+
                 time: " ",
                 topic: " ",
                 content: " "
@@ -104,16 +108,32 @@ export default {
                
                 
             },
-            display: true
+            display: true,
+            loading: false
         }
     },
     methods:{
         reload(){
-            var timeout = setTimeout("location.reload(true);", 6000);
-            function resetTimeout(){
-                clearTimeout(timeout);
-                timeout = setTimeout("location.reload(true", 6000);
-            }
+            this.loading = true
+             axios.get('https://mercy-blog-df28b.firebaseio.com/users.json')
+         .then(res => {
+             console.log(res)
+             const data  = res.data;
+             let users = [];
+             for(let key in data){
+                 const user = data[key];
+                 user.id = key;
+                 users.push(user)
+             }
+            //  console.log(this.blogs)
+            //  console.log(users);
+             this.blogs = users
+             console.log(this.blogs)
+              this.loading = false
+         })
+         .catch(error => console.log(error))
+        
+                
         },
         remove(i){
             axios.delete(`https://mercy-blog-df28b.firebaseio.com/users/${i}.json`).then(function(res){
@@ -129,35 +149,23 @@ export default {
             this.postUpdate = this.blogs.indexOf(id);
         },
         updatePost(i){
-            console.log(i)
-            axios.put(`https://mercy-blog-df28b.firebaseio.com/users/${i}.json`, this.userData).then(function(res){
+            this.loading = true
+            axios.put(`https://mercy-blog-df28b.firebaseio.com/users/${i}.json`, this.userData)
+            .then(res=>{
                 console.log(res)
-            }, function(error){
-                console.log(error)
+               this.reload();
+               this.display = !this.display
+            }).catch(err=> {
+                console.log(err)
             })
-            this.reload()
+            
+           
         }
 
     },
     name:'dashboard',
     created(){
-        axios.get('https://mercy-blog-df28b.firebaseio.com/users.json')
-         .then(res => {
-             console.log(res)
-             const data  = res.data;
-             let users = [];
-             for(let key in data){
-                 const user = data[key];
-                 user.id = key;
-                 users.push(user)
-             }
-            //  console.log(this.blogs)
-            //  console.log(users);
-             this.blogs = users
-             console.log(this.blogs)
-         })
-         .catch(error => console.log(error))
-                
+       this.reload()
     }
 }
 </script>
@@ -186,6 +194,87 @@ ul{
 .mat{
     margin:10px;
 }
+.loader {
+  color: green;
+  font-size: 90px;
+  text-indent: -9999em;
+  overflow: hidden;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin: 72px auto;
+  position: relative;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+  animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+}
+@-webkit-keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@-webkit-keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
 
 
 
