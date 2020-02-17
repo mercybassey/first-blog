@@ -7,7 +7,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <router-link to="/home" class="nav-item nav-link " >Home <span class="sr-only">(current)</span></router-link>
+      <router-link to="/Home" class="nav-item nav-link " >Home <span class="sr-only">(current)</span></router-link>
       <router-link to="/signup" class="nav-item nav-link" >Add Post</router-link>
       <router-link to="/dashboard" class="nav-item nav-link" >Dashboard</router-link>
       

@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 import signup from '@/views/signup.vue'
 import dashboard from '@/views/dashboard.vue'
-import home from '@/views/home.vue'
+import Home from '@/views/Home.vue'
 
 Vue.use(VueRouter)
 
@@ -20,9 +20,9 @@ const routes = [
     name:'dashboard'
   },
   {
-    path:'/home',
-    component: home,
-    name:'home'
+    path:'/Home',
+    component: Home,
+    name:'Home'
   }
   
 ]
